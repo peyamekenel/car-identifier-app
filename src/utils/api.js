@@ -16,7 +16,7 @@ export const identifyVehicle = async (base64Image) => {
           {
             parts: [
               {
-                text: "You are a vehicle recognition expert. Please identify the make, model, approximate production year, license plate (if visible), and color of the car in this image. Only return the following format:\n\nMake: [Brand]\nModel: [Model]\nYear: [Estimated Year or Range]\nColor: [Main color of the vehicle]\nLicense Plate: [License plate number if visible, otherwise 'Not visible']"
+                text: "You are a vehicle recognition expert. Please identify the make, model, approximate production year, license plate (if visible), color, and vehicle type of the car in this image. For vehicle type, categorize as: Sedan, Hatchback, SUV, Truck, Van, Coupe, Convertible, Wagon, or Other. Only return the following format:\n\nMake: [Brand]\nModel: [Model]\nYear: [Estimated Year or Range]\nColor: [Main color of the vehicle]\nVehicle Type: [Sedan/Hatchback/SUV/Truck/Van/Coupe/Convertible/Wagon/Other]\nLicense Plate: [License plate number if visible, otherwise 'Not visible']"
               },
               {
                 inline_data: {

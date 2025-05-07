@@ -171,7 +171,7 @@ export default function CameraScreen({ navigation }) {
       ) : (
         <View style={styles.selectImageContainer}>
           <Text style={styles.instructionText}>
-            Take a photo or select an image of a car to identify its make, model, year, color, and license plate.
+            Take a photo or select an image of a car to identify its make, model, year, color, vehicle type, and license plate.
           </Text>
           
           <View style={styles.buttonContainer}>
