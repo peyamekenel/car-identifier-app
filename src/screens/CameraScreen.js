@@ -1,8 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ActivityIndicator, Alert, Platform } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ActivityIndicator, Alert, Platform, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { identifyVehicle } from '../utils/api';
+
+// VehicleInfo component to display results in a structured way
+const VehicleInfo = ({ info }) => {
+  if (!info) return null;
+  
+  // Parse the information from the text response
+  const lines = info.split('\n').filter(line => line.trim());
+  const infoObject = {};
+  
+  lines.forEach(line => {
+    const [key, value] = line.split(':').map(item => item.trim());
+    if (key && value) {
+      infoObject[key] = value;
+    }
+  });
+  
+  return (
+    <View style={styles.infoCard}>
+      {Object.entries(infoObject).map(([key, value]) => (
+        <View key={key} style={styles.infoRow}>
+          <Text style={styles.infoLabel}>{key}:</Text>
+          <Text style={styles.infoValue}>{value}</Text>
+        </View>
+      ))}
+    </View>
+  );
+};
 
 export default function CameraScreen({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -120,7 +147,7 @@ export default function CameraScreen({ navigation }) {
   return (
     <View style={styles.container}>
       {capturedImage ? (
-        <View style={styles.previewContainer}>
+        <ScrollView style={styles.previewContainer} contentContainerStyle={styles.previewContentContainer}>
           <Image source={{ uri: capturedImage }} style={styles.preview} />
           
           {isLoading ? (
@@ -131,7 +158,7 @@ export default function CameraScreen({ navigation }) {
           ) : vehicleInfo ? (
             <View style={styles.resultContainer}>
               <Text style={styles.resultTitle}>Vehicle Information</Text>
-              <Text style={styles.resultText}>{vehicleInfo}</Text>
+              <VehicleInfo info={vehicleInfo} />
             </View>
           ) : null}
           
@@ -140,11 +167,11 @@ export default function CameraScreen({ navigation }) {
               <Text style={styles.buttonText}>Select Another Photo</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       ) : (
         <View style={styles.selectImageContainer}>
           <Text style={styles.instructionText}>
-            Take a photo or select an image of a car to identify its make, model, and year.
+            Take a photo or select an image of a car to identify its make, model, year, color, and license plate.
           </Text>
           
           <View style={styles.buttonContainer}>
@@ -198,6 +225,8 @@ const styles = StyleSheet.create({
   },
   previewContainer: {
     flex: 1,
+  },
+  previewContentContainer: {
     padding: 20,
   },
   preview: {
@@ -235,33 +264,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
   },
-  cameraContainer: {
-    flex: 1,
-    backgroundColor: 'black',
+  infoCard: {
+    marginTop: 5,
   },
-  camera: {
-    flex: 1,
-    position: 'relative',
-  },
-  cameraButtonContainer: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-    zIndex: 10,
-  },
-  flipButton: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 10,
-    borderRadius: 5,
-  },
-  flipButtonText: {
-    color: 'white',
-    fontSize: 14,
-  },
-  actionButtonContainer: {
+  infoRow: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    padding: 20,
-    backgroundColor: 'black',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  infoLabel: {
+    fontWeight: 'bold',
+    width: '40%',
+    fontSize: 16,
+  },
+  infoValue: {
+    width: '60%',
+    fontSize: 16,
   },
 });
